@@ -210,6 +210,7 @@ def spa_fallback(path):
     return send_from_directory(app.static_folder, 'index.html')
 
 
+init_db()
+
 if __name__ == '__main__':
-    init_db()
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', '3000')))
