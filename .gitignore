@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+campuslend.sqlite3
+.env
+.env.*
+node_modules/

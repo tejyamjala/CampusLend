@@ -1,0 +1,1 @@
+{"routes":[{"path":"/","title":"CampusLend Dashboard"},{"path":"/browse","title":"Browse equipment"},{"path":"/lend","title":"Lend equipment"},{"path":"/requests","title":"Borrow requests"},{"path":"/tracking","title":"Track rentals"},{"path":"/history","title":"Rental history"}]}
