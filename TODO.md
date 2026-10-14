@@ -25,3 +25,8 @@
 - [x] A lender or borrower can confirm a return in the working prototype.
 - [x] The UI shows an overdue state and derives a penalty after the agreed return time.
 - [x] Rental history shows past lending and borrowing outcomes, dates, and penalties.
+
+## 6. Clean first-use and database-backed state
+- [x] The shipped runtime starts without pre-created users, devices, borrowing requests, bookings, borrowed items, lent items, random names, or fabricated activity.
+- [x] The first student enters their own name, college, campus email, and password to create the first database account.
+- [x] The interface reads session, equipment, requests, bookings, fees, and returns through the Flask API backed by SQLite; it does not use browser localStorage as the source of truth.

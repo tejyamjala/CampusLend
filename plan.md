@@ -66,3 +66,6 @@ Deep campus navy `#1A1A2E`, made ownable through white paper surfaces and indigo
 - `public/manus-routes.json` — declared page routes for the managed preview.
 - `app.config.ts` — project logo metadata.
 - `TODO.md` — acceptance outcomes and progress.
+
+## Clean first-use behavior
+The shipped runtime does not seed users, devices, requests, bookings, names, or activity. The frontend calls the Flask API for session state, devices, requests, and bookings; the first user must create an account with their own name, college, email, and password. SQLite is the source of truth and browser localStorage is not used for application data.

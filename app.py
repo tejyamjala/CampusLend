@@ -8,6 +8,7 @@ ROOT = os.path.dirname(__file__)
 DB_PATH = os.path.join(ROOT, 'campuslend.sqlite3')
 app = Flask(__name__, static_folder='public', static_url_path='/assets')
 app.secret_key = os.environ.get('SESSION_SECRET', 'campuslend-hackathon-secret')
+app.config.update(SESSION_COOKIE_SAMESITE='None', SESSION_COOKIE_SECURE=True, SESSION_COOKIE_HTTPONLY=True)
 
 
 def db():
@@ -23,6 +24,7 @@ def init_db():
       CREATE TABLE IF NOT EXISTS devices (id INTEGER PRIMARY KEY, owner_id INTEGER NOT NULL, name TEXT NOT NULL, category TEXT NOT NULL, condition TEXT NOT NULL, price_per_day REAL DEFAULT 0, available_from TEXT, available_to TEXT, status TEXT DEFAULT 'available', FOREIGN KEY(owner_id) REFERENCES users(id));
       CREATE TABLE IF NOT EXISTS bookings (id INTEGER PRIMARY KEY, device_id INTEGER NOT NULL, borrower_id INTEGER NOT NULL, reason TEXT NOT NULL, start_at TEXT NOT NULL, duration_hours INTEGER NOT NULL, return_at TEXT NOT NULL, fee REAL NOT NULL, late_fee REAL DEFAULT 0, status TEXT DEFAULT 'pending', payment_status TEXT DEFAULT 'unpaid', picked_up_at TEXT, returned_at TEXT, FOREIGN KEY(device_id) REFERENCES devices(id), FOREIGN KEY(borrower_id) REFERENCES users(id));
       CREATE TABLE IF NOT EXISTS reports (id INTEGER PRIMARY KEY, booking_id INTEGER NOT NULL, reporter_id INTEGER NOT NULL, kind TEXT NOT NULL, details TEXT NOT NULL, status TEXT DEFAULT 'open', created_at TEXT NOT NULL);
+      CREATE TABLE IF NOT EXISTS requests (id INTEGER PRIMARY KEY, requester_id INTEGER NOT NULL, title TEXT NOT NULL, category TEXT NOT NULL, duration TEXT NOT NULL, detail TEXT, status TEXT DEFAULT 'open', created_at TEXT NOT NULL, FOREIGN KEY(requester_id) REFERENCES users(id));
     ''')
     connection.commit()
     connection.close()
@@ -72,6 +74,36 @@ def login():
 def logout():
     session.clear()
     return jsonify(ok=True)
+
+@app.get('/api/auth/me')
+def me():
+    if 'user_id' not in session:
+        return jsonify(user=None)
+    connection = db()
+    row = connection.execute('SELECT * FROM users WHERE id=?', (session['user_id'],)).fetchone()
+    connection.close()
+    return jsonify(user=user_payload(row) if row else None)
+
+
+@app.get('/api/requests')
+def get_requests():
+    connection = db()
+    rows = connection.execute('SELECT requests.*, users.name AS requester_name FROM requests JOIN users ON users.id=requests.requester_id WHERE requests.status=? ORDER BY requests.id DESC', ('open',)).fetchall()
+    connection.close()
+    return jsonify(requests=[dict(row) for row in rows])
+
+
+@app.post('/api/requests')
+def create_request():
+    if 'user_id' not in session:
+        return jsonify(error='Sign in required'), 401
+    body = request.get_json(force=True)
+    if not body.get('title') or not body.get('category') or not body.get('duration'):
+        return jsonify(error='Title, category, and duration are required'), 400
+    connection = db()
+    cursor = connection.execute('INSERT INTO requests (requester_id,title,category,duration,detail,created_at) VALUES (?,?,?,?,?,?)', (session['user_id'], body['title'], body['category'], body['duration'], body.get('detail', ''), datetime.utcnow().isoformat()))
+    connection.commit(); connection.close()
+    return jsonify(request={'id': cursor.lastrowid, 'status': 'open'}), 201
 
 
 @app.get('/api/devices')
