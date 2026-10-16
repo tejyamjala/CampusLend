@@ -47,3 +47,9 @@
 - [x] Only the equipment owner can accept or reject requests; accepted requests create confirmed bookings and prevent overlapping confirmed bookings.
 - [x] Simulated payments are labeled DEMO / SIMULATED and persisted with booking ID, amount, and status.
 - [x] Borrower savings are purchase-cost estimate minus rental cost and are recorded only after return; lender rental income remains separate.
+
+## 10. Production request-flow hardening
+- [x] Show every equipment item the authenticated owner has listed in Your Tools, including its current availability state and incoming requests.
+- [x] Show approved rental records and completed history inside Your Tools, with a working link to rental details.
+- [x] Replace generic request failures with structured, actionable API errors and a safe server-side exception response.
+- [x] Reject pickup dates in the past and set the request form's minimum pickup/return date to today.

@@ -200,6 +200,12 @@ def require_user():
     return user_id, None
 
 
+@app.errorhandler(Exception)
+def handle_unexpected_error(error):
+    app.logger.exception('Unhandled CampusLend request error')
+    return jsonify(error='We could not complete that action. Refresh the page and try again.'), 500
+
+
 def auth_response(user_id, status=200):
     token = secrets.token_urlsafe(48)
     connection = db()
@@ -343,6 +349,8 @@ def create_rental_request():
         return_date = parse_day(body['return_date'], 'Return date')
     except ValueError as error_message:
         return jsonify(error=str(error_message)), 400
+    if pickup_date < date.today():
+        return jsonify(error='Pickup date cannot be in the past'), 400
     if return_date < pickup_date:
         return jsonify(error='Return date cannot be before pickup date'), 400
     connection = db()

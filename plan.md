@@ -74,3 +74,6 @@ The shipped runtime does not seed users, devices, requests, bookings, names, or 
 The existing custom email/password flow is preserved, but authentication now uses a database-backed opaque session token (`campuslend_session`) with HTTP-only, Secure, SameSite=None cookie attributes. Passwords remain Werkzeug hashes and never reach the frontend. The app uses the managed MySQL-compatible `DATABASE_URL` in Preview and publication, with SQLite only as a local fallback.
 
 Listings, rental requests, bookings, simulated payments, savings, and sessions are persisted in the managed database. Every device stores its owner ID; Browse Gear excludes the current user's devices, while Your Tools is owner-scoped and exposes incoming requests and rental records. Rental requests require pickup and return dates plus a pickup location, and only the device owner can approve or reject them. Savings are calculated only when a rental is returned, separately from lender income.
+
+## Request-flow hardening
+The request client now preserves structured API errors instead of collapsing non-JSON server responses into “Something went wrong.” Pickup dates cannot be in the past, request date fields receive a browser-side minimum, and Your Tools rental records are interactive. A safe JSON error handler logs unexpected server exceptions without exposing internals to users.
