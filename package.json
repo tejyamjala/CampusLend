@@ -6,9 +6,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
-  },
-  "dependencies": {
-    "express": "^4.21.2"
+    "dev": "python3 app.py",
+    "test": "python3 -m unittest discover -s tests -v"
   }
 }

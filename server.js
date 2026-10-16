@@ -1,17 +1,34 @@
-const express = require('express');
-const path = require('path');
+const { spawn } = require('node:child_process');
 
-const app = express();
-const PORT = Number(process.env.PORT || 3000);
-const publicDir = path.join(__dirname, 'public');
+const python = process.env.PYTHON || 'python3';
+const port = String(process.env.PORT || 3000);
+const args = [
+  '-m', 'gunicorn',
+  '--bind', `0.0.0.0:${port}`,
+  '--workers', '2',
+  '--threads', '4',
+  '--timeout', '60',
+  'app:app',
+];
 
-app.disable('x-powered-by');
-app.use(express.json());
-app.get('/health', (_req, res) => res.status(200).json({ ok: true, service: 'campusloop' }));
-app.get('/api/status', (_req, res) => res.json({ mode: 'demo', message: 'CampusLoop demo workspace ready' }));
-app.use(express.static(publicDir, { extensions: ['html'] }));
-app.get('*', (_req, res) => res.sendFile(path.join(publicDir, 'index.html')));
+const service = spawn(python, args, {
+  stdio: 'inherit',
+  env: { ...process.env, APP_ENV: process.env.APP_ENV || 'production' },
+});
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`CampusLoop listening on 0.0.0.0:${PORT}`);
+let shutdownRequested = false;
+for (const signal of ['SIGINT', 'SIGTERM']) {
+  process.on(signal, () => {
+    shutdownRequested = true;
+    service.kill(signal);
+  });
+}
+
+service.on('error', (error) => {
+  console.error(`Could not start the CampusLend Flask service: ${error.message}`);
+  process.exitCode = 1;
+});
+
+service.on('exit', (code, signal) => {
+  process.exitCode = shutdownRequested ? 0 : signal ? 1 : (code ?? 1);
 });

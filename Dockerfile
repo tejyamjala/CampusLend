@@ -11,6 +11,7 @@ COPY app.py ./
 COPY public ./public
 COPY app.config.ts ./
 
-ENV PORT=3000
+ENV PORT=3000 \
+    APP_ENV=production
 EXPOSE 3000
 CMD ["sh", "-c", "exec gunicorn --bind 0.0.0.0:${PORT:-3000} --workers 2 --threads 4 --timeout 60 app:app"]
