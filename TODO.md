@@ -30,3 +30,20 @@
 - [x] The shipped runtime starts without pre-created users, devices, borrowing requests, bookings, borrowed items, lent items, random names, or fabricated activity.
 - [x] The first student enters their own name, college, campus email, and password to create the first database account.
 - [x] The interface reads session, equipment, requests, bookings, fees, and returns through the Flask API backed by SQLite; it does not use browser localStorage as the source of truth.
+
+## 7. Persistent authentication and managed data
+- [x] Investigate and fix the published persistence issue: the previous app used a container-local SQLite file, so registered accounts and records could disappear after restart or redeploy.
+- [x] Use one database-backed session provider for registration, login, and session restoration; use secure HTTP-only session cookies, hashed passwords, and no frontend credentials.
+- [x] Use the managed MySQL-compatible `DATABASE_URL` for published and Preview data, with SQLite fallback only for local development.
+
+## 8. Ownership and Your Tools
+- [x] Every equipment listing stores the authenticated owner ID.
+- [x] Browse Gear excludes equipment owned by the logged-in user.
+- [x] Your Tools shows the logged-in user's listings, availability, incoming requests, approved rentals, and history, with owner-scoped authorization.
+
+## 9. Rental requests, pickup, approvals, payment, and savings
+- [x] Borrowing requests persist a unique request ID, equipment ID, owner ID, borrower ID, pickup and return dates, pickup location, message, status, and creation time.
+- [x] Pickup location, pickup date, and return date are required; return date cannot precede pickup date.
+- [x] Only the equipment owner can accept or reject requests; accepted requests create confirmed bookings and prevent overlapping confirmed bookings.
+- [x] Simulated payments are labeled DEMO / SIMULATED and persisted with booking ID, amount, and status.
+- [x] Borrower savings are purchase-cost estimate minus rental cost and are recorded only after return; lender rental income remains separate.

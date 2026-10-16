@@ -2,3 +2,19 @@
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
 
 .equipment-card-footer{border-top:1px solid #eef0f3;margin-top:10px;padding-top:9px;min-height:24px}.card-action{background:transparent;color:var(--indigo);font-size:10px;font-weight:800;padding:0}.card-action span{font-size:14px;margin-left:4px}.card-unavailable{font-size:10px;color:var(--slate)}.drawer-form{display:grid;gap:15px;margin-top:22px}.drawer-form label{display:grid;gap:7px;font:10px 'DM Mono',monospace;text-transform:uppercase;color:var(--muted);letter-spacing:.5px}.drawer-form input,.drawer-form select,.drawer-form textarea{border:1px solid var(--line);border-radius:7px;padding:12px;color:var(--ink);background:#fafbfc;outline:0;font-size:12px;text-transform:none;letter-spacing:0;resize:vertical}.drawer-form input:focus,.drawer-form select:focus,.drawer-form textarea:focus{border-color:var(--slate);background:#fff}.request-avatar{flex-shrink:0}
+
+/* Private equipment desk */
+.tools-grid { display: grid; gap: 16px; }
+.tool-panel { padding: 24px; }
+.tool-panel .panel-head small { display: block; margin-top: 8px; color: var(--muted); }
+.tool-request-list { margin-top: 20px; border-top: 1px solid var(--line); }
+.tool-request { display: flex; justify-content: space-between; gap: 18px; padding: 18px 0; border-bottom: 1px solid var(--line); }
+.tool-request:last-child { border-bottom: 0; padding-bottom: 0; }
+.tool-request strong, .tool-request small, .tool-request p { display: block; }
+.tool-request small { color: var(--muted); margin-top: 5px; }
+.tool-request p { margin: 8px 0 0; color: var(--text-soft); }
+.tool-request-actions { display: flex; gap: 8px; }
+.tool-request-actions .button { padding: 10px 14px; font-size: 12px; }
+.tool-empty { padding: 18px 0 0; color: var(--muted); }
+.demo-note { padding: 12px 14px; border: 1px solid rgba(219, 154, 68, .35); background: rgba(219, 154, 68, .08); color: #9a641e; font-size: 12px; }
+@media (max-width: 640px) { .tool-request { flex-direction: column; } .tool-request-actions { width: 100%; } .tool-request-actions .button { flex: 1; } }

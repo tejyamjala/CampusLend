@@ -69,3 +69,8 @@ Deep campus navy `#1A1A2E`, made ownable through white paper surfaces and indigo
 
 ## Clean first-use behavior
 The shipped runtime does not seed users, devices, requests, bookings, names, or activity. The frontend calls the Flask API for session state, devices, requests, and bookings; the first user must create an account with their own name, college, email, and password. SQLite is the source of truth and browser localStorage is not used for application data.
+
+## Persistence and ownership hardening
+The existing custom email/password flow is preserved, but authentication now uses a database-backed opaque session token (`campuslend_session`) with HTTP-only, Secure, SameSite=None cookie attributes. Passwords remain Werkzeug hashes and never reach the frontend. The app uses the managed MySQL-compatible `DATABASE_URL` in Preview and publication, with SQLite only as a local fallback.
+
+Listings, rental requests, bookings, simulated payments, savings, and sessions are persisted in the managed database. Every device stores its owner ID; Browse Gear excludes the current user's devices, while Your Tools is owner-scoped and exposes incoming requests and rental records. Rental requests require pickup and return dates plus a pickup location, and only the device owner can approve or reject them. Savings are calculated only when a rental is returned, separately from lender income.
